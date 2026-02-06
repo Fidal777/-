@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>เริ่มทำแบบทดสอบ | องค์ประกอบศิลป์</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;600;800&family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+    theme: {
+        extend: {
+            fontFamily: { sans: ['Kanit','Poppins','sans-serif'] },
+            colors: { brand:{accent:'#FF69B4'} }
+        }
+    }
+}
+</script>
+
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    background: #000;
+    font-family: 'Kanit', sans-serif;
+    color: white;
+}
+
+/* พื้นหลัง parallax */
+#layer1 {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 110%;
+    height: 110%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.25;
+    z-index: -3;
+    transition: transform 0.1s linear;
+}
+
+/* กล่องแก้ว */
+.glass {
+    background: rgba(0, 0, 0, 0.352);
+    border: 1px solid rgba(255, 0, 195, 0.449);
+    backdrop-filter: blur(14px);
+    border-radius: 20px;
+}
+
+.correct { background:rgba(0,255,0,0.15); border-color:#00f260!important; }
+.wrong   { background:rgba(255,0,0,0.15); border-color:#ff3b3b!important; }
+</style>
+</head>
+
+<body>
+
+<!-- Parallax BG -->
+<div id="layer1" class="parallax-layer"
+     style="background-image:url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=2400&q=100');">
+</div>
+
+<script>
+document.addEventListener('mousemove', e => {
+    const x = (e.clientX / window.innerWidth - 0.5) * 20;
+    const y = (e.clientY / window.innerHeight - 0.5) * 20;
+    layer1.style.transform = `translate(${x}px, ${y}px)`;
+});
+</script>
+
+<!-- ================== หน้าเริ่มสอบ ================== -->
+<div class="w-full min-h-screen flex justify-center items-center px-4">
+
+<div id="startPage"
+     class="glass p-10 max-w-2xl w-full text-center animate-fadeIn">
+
+    <h1 class="text-5xl font-bold mb-6 text-brand-accent">
+        แบบทดสอบ บทที่ 1<br>"เส้น"
+    </h1>
+
+    <p class="text-gray-300 mb-8 text-lg">
+        ทดสอบความเข้าใจเรื่องเส้นทั้งหมด 15 ข้อ พร้อมระบบตรวจคะแนนอัตโนมัติ
+    </p>
+
+    <button onclick="startQuiz()"
+        class="w-full py-4 bg-brand-accent text-black font-bold rounded-xl text-xl hover:scale-105 transition">
+        เริ่มทำแบบทดสอบ
+    </button>
+</div>
+
+</div>
+
+
+<!-- ================== หน้าแบบทดสอบ ================== -->
+<div id="quizPage" class="hidden max-w-4xl mx-auto glass p-10 animate-fadeIn mt-10">
+    <h1 class="text-4xl font-bold text-center mb-6 text-brand-accent">แบบทดสอบเรื่อง “เส้น”</h1>
+    <form id="quiz" class="space-y-8"></form>
+    <button onclick="checkScore()"
+            class="mt-10 w-full py-4 bg-brand-accent text-black font-bold rounded-xl text-lg hover:scale-105 transition">
+        ตรวจคะแนน
+    </button>
+    <div id="warn" class="text-red-400 text-center mt-3"></div>
+</div>
+
+
+<!-- ================== หน้าแสดงคะแนน ================== -->
+<div id="resultPage" class="hidden glass p-10 max-w-3xl mx-auto text-center animate-fadeIn mt-10">
+    <div id="answerReview" class="mt-10 space-y-4 text-left"></div>
+    <h1 class="text-4xl font-bold mb-6 text-brand-accent">ผลคะแนน</h1>
+    <canvas id="scoreGraph" width="400" height="260" class="mx-auto"></canvas>
+    <p id="scoreText" class="text-3xl font-bold mt-6"></p>
+    <button onclick="location.reload()"
+            class="mt-10 w-full py-4 bg-brand-accent text-black font-bold rounded-xl text-lg hover:scale-105 transition">
+        ทำใหม่อีกครั้ง
+    </button>
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+/* คำถามทั้งหมด */
+const questions = [
+    {q:"เส้นคืออะไรในงานศิลปะ?",a:["การเคลื่อนที่ของจุด","พื้นผิวของวัตถุ","พื้นที่ว่าง","ความสว่างของสี"],c:0},
+    {q:"เส้นตรงให้ความรู้สึกแบบใด?",a:["อิสระ","มั่นคง แข็งแรง","นุ่มนวล","สับสน"],c:1},
+    {q:"เส้นโค้งมักสื่ออารมณ์แบบใด?",a:["อันตราย","เรียบง่าย","ไหลลื่น อ่อนโยน","เร่งรีบ"],c:2},
+    {q:"เส้นซิกแซกให้ความรู้สึก...",a:["น่ากลัว ตื่นเต้น","สงบ","เป็นระเบียบ","หนักแน่น"],c:0},
+    {q:"เส้นประใช้เพื่ออะไร?",a:["หยุดสายตา","แบ่งพื้นที่","ทำให้วัตถุดูแข็งแรง","เพิ่มน้ำหนัก"],c:1},
+    {q:"เส้นแนวนอนให้ความรู้สึก...",a:["มั่นคง","สงบ ผ่อนคลาย","เคลื่อนไหว","อันตราย"],c:1},
+    {q:"เส้นแนวตั้งสื่อความหมายใด?",a:["ความมั่นคง ความสูง","ความเร็ว","ความน่ากลัว","ความโกลาหล"],c:0},
+    {q:"เส้นทแยงหมายถึงอะไร?",a:["นิ่งสงบ","เคลื่อนไหวและพลัง","นุ่มนวล","สมดุล"],c:1},
+    {q:"เส้นมีหน้าที่ใดต่อองค์ประกอบภาพ?",a:["ทำให้ภาพมืด","กำหนดทิศทางสายตา","ลดรายละเอียด","เพิ่มเงา"],c:1},
+    {q:"ข้อใดไม่ใช่ประเภทของเส้น?",a:["เส้นตรง","เส้นโค้ง","เส้นสามมิติ","เส้นซิกแซก"],c:2},
+    {q:"เส้นต่อเนื่องช่วยให้เกิดอะไร?",a:["การเคลื่อนไหวของรูป","ความมืด","ความหยาบ","พื้นผิวเงา"],c:0},
+    {q:"ลักษณะเส้นหนาให้ความรู้สึกแบบใด?",a:["หนักแน่น","เบาสบาย","สับสน","อ่อนแอ"],c:0},
+    {q:"เส้นบางให้ความรู้สึกแบบใด?",a:["มั่นคง","เคร่งเครียด","ละเอียด อ่อนหวาน","แข็งแรง"],c:2},
+    {q:"ศิลปินใช้เส้นเพื่ออะไร?",a:["สร้างมิติและกำหนดรูปร่าง","ทำให้สีสดขึ้น","ลดความคม","เพิ่มความหนัก"],c:0},
+    {q:"เส้นที่ลากอิสระไม่เป็นระเบียบเรียกว่า?",a:["เส้นควบคุม","เส้นอิสระ","เส้นตั้งใจ","เส้นเรขาคณิต"],c:1}
+];
+
+const quizForm = document.getElementById("quiz");
+
+questions.forEach((item,index)=>{
+    let box = document.createElement("div");
+    box.className = "glass p-6";
+    let ansHTML = "";
+    item.a.forEach((ch,i)=>{
+        ansHTML += `
+        <label class='flex items-center gap-3 py-1 cursor-pointer'>
+            <input type="radio" name="q${index}" value="${i}" class="accent-brand-accent">
+            <span>${ch}</span>
+        </label>`;
+    });
+    box.innerHTML = `<h3 class='font-bold text-lg mb-3'>${index+1}. ${item.q}</h3>${ansHTML}`;
+    quizForm.appendChild(box);
+});
+
+function startQuiz(){
+    startPage.classList.add("hidden");
+    quizPage.classList.remove("hidden");
+}
+
+function checkScore(){
+
+    for(let i=0;i<questions.length;i++){
+        if(!document.querySelector(`input[name='q${i}']:checked`)){
+            warn.innerHTML = `กรุณาตอบข้อที่ <span class='text-brand-accent'>${i+1}</span>`;
+            return;
+        }
+    }
+
+    let score = 0;
+    document.querySelectorAll('#quiz > div').forEach((box,i)=>{
+        const selected = document.querySelector(`input[name='q${i}']:checked`);
+        if(parseInt(selected.value) === questions[i].c){
+            box.classList.add("correct");
+            score++;
+        } else {
+            box.classList.add("wrong");
+        }
+    });
+
+    quizPage.classList.add("hidden");
+    resultPage.classList.remove("hidden");
+
+    scoreText.innerHTML = `คุณได้คะแนน <span class='text-brand-accent text-4xl'>${score}</span> / 15`;
+
+    new Chart(scoreGraph,{
+        type:'doughnut',
+        data:{
+            labels:['ถูก','ผิด'],
+            datasets:[{
+                data:[score,15-score],
+                backgroundColor:['#00f260','#ff4545'],
+            }]
+        }
+    });
+}
+function checkScore() {
+
+    // ตรวจว่าตอบครบไหม
+    for(let i=0;i<questions.length;i++){
+        if(!document.querySelector(`input[name='q${i}']:checked`)){
+            warn.innerHTML = `กรุณาตอบข้อที่ <span class='text-brand-accent'>${i+1}</span>`;
+            return;
+        }
+    }
+
+    let score = 0;
+    let reviewHTML = "";
+
+    document.querySelectorAll('#quiz > div').forEach((box,i)=>{
+
+        const selected = document.querySelector(`input[name='q${i}']:checked`);
+        const userAns = parseInt(selected.value);
+        const correctAns = questions[i].c;
+
+        if(userAns === correctAns){
+            box.classList.add("correct");
+            score++;
+        } else {
+            box.classList.add("wrong");
+        }
+
+        // สร้างเฉลย
+        reviewHTML += `
+            <div class="p-4 rounded-xl border ${
+                userAns === correctAns ? "border-green-400 bg-green-800/20" : "border-red-400 bg-red-800/20"
+            }">
+                <p class="font-bold text-lg">ข้อ ${i+1}. ${questions[i].q}</p>
+                <p class="mt-1">คุณตอบ: 
+                    <span class="${userAns === correctAns ? 'text-green-300' : 'text-red-300'}">
+                        ${questions[i].a[userAns]}
+                    </span>
+                </p>
+                <p>คำตอบที่ถูกต้องคือ: 
+                    <span class="text-brand-accent font-bold">
+                        ${questions[i].a[correctAns]}
+                    </span>
+                </p>
+            </div>
+        `;
+    });
+
+    // ซ่อนหน้า quiz ไปหน้า result
+    quizPage.classList.add("hidden");
+    resultPage.classList.remove("hidden");
+
+    // แสดงคะแนนรวม
+    scoreText.innerHTML = `คุณได้คะแนน <span class='text-brand-accent text-4xl'>${score}</span> / 15`;
+
+    // ใส่เฉลยลงหน้าใหม่
+    document.getElementById("answerReview").innerHTML = reviewHTML;
+
+    // วงกลมคะแนน
+    new Chart(scoreGraph,{
+        type:'doughnut',
+        data:{
+            labels:['ถูก','ผิด'],
+            datasets:[{
+                data:[score,15-score],
+                backgroundColor:['#00f260','#ff4545'],
+            }]
+        }
+    });
+}
+
+</script>
+
+</body>
+</html>

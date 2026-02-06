@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - AI Transformation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* ใช้ CSS เดียวกับหน้า Login ของคุณ */
+        :root { --bg-color: #050505; --primary-green: #00FF88; --text-white: #ffffff; --text-gray: #b0b0b0; --glass-bg: rgba(20, 20, 20, 0.7); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Kanit', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-white); height: 100vh; width: 100vw; overflow: hidden; display: flex; justify-content: center; align-items: center; position: relative; }
+        #canvas-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        .register-card { position: relative; z-index: 10; width: 100%; max-width: 420px; padding: 2.5rem; background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid rgba(0, 255, 136, 0.3); border-radius: 16px; text-align: center; }
+        .logo { font-size: 2.5rem; color: var(--primary-green); text-shadow: 0 0 10px var(--primary-green); margin-bottom: 10px; }
+        h2 { margin-bottom: 20px; font-weight: 600; }
+        .input-group { margin-bottom: 1.5rem; text-align: left; }
+        .input-group label { display: block; margin-bottom: 8px; font-size: 0.85rem; color: var(--primary-green); }
+        .input-group input { width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid #333; border-radius: 8px; color: white; }
+        .btn-reg { width: 100%; padding: 15px; background: var(--primary-green); color: #000; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+        .link-login { display: block; margin-top: 15px; color: var(--text-gray); text-decoration: none; font-size: 0.9rem; }
+        .link-login:hover { color: var(--primary-green); }
+        #message { margin-top: 15px; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <canvas id="canvas-bg"></canvas>
+    <div class="register-card">
+        <div class="logo">● ■ ▲</div>
+        <h2>สร้างบัญชีใหม่</h2>
+        <form id="regForm">
+            <div class="input-group">
+                <label>ชื่อผู้ใช้งาน / Username</label>
+                <input type="text" id="regUser" placeholder="ตั้งชื่อผู้ใช้งาน" required>
+            </div>
+            <div class="input-group">
+                <label>รหัสผ่าน / Password</label>
+                <input type="password" id="regPass" placeholder="ตั้งรหัสผ่าน" required>
+            </div>
+            <button type="submit" class="btn-reg">สมัครสมาชิก</button>
+            <a href="ล็อกอิน.html" class="link-login">มีบัญชีอยู่แล้ว? เข้าสู่ระบบ</a>
+            <div id="message"></div>
+        </form>
+    </div>
+
+    <script>
+        // --- ส่วนที่ 1: Particle Background (เหมือนเดิม) ---
+        const canvas = document.getElementById('canvas-bg'); const ctx = canvas.getContext('2d'); canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particles = []; function init(){ for(let i=0; i<80; i++){ particles.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, dx:(Math.random()-0.5)*1, dy:(Math.random()-0.5)*1}); } }
+        function animate(){ ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle="#00FF88"; particles.forEach(p=>{ p.x+=p.dx; p.y+=p.dy; if(p.x<0||p.x>canvas.width) p.dx*=-1; if(p.y<0||p.y>canvas.height) p.dy*=-1; ctx.beginPath(); ctx.arc(p.x,p.y,2,0,Math.PI*2); ctx.fill(); }); requestAnimationFrame(animate); }
+        init(); animate();
+
+        // --- ส่วนที่ 2: Logic การสมัครสมาชิก ---
+        document.getElementById('regForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const u = document.getElementById('regUser').value;
+            const p = document.getElementById('regPass').value;
+            const msg = document.getElementById('message');
+
+            let users = JSON.parse(localStorage.getItem('myUsers')) || [];
+            
+            if(users.find(user => user.username === u)) {
+                msg.innerText = "ชื่อผู้ใช้นี้ถูกใช้ไปแล้ว!";
+                msg.style.color = "#ff4444";
+            } else {
+                users.push({username: u, password: p});
+                localStorage.setItem('myUsers', JSON.stringify(users));
+                msg.innerText = "สมัครสำเร็จ! กำลังไปหน้าล็อกอิน...";
+                msg.style.color = "#00FF88";
+                setTimeout(() => { window.location.href = "ล็อกอิน.html"; }, 1500);
+            }
+        });
+    </script>
+</body>
+</html>

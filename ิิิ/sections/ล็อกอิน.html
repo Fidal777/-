@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - AI Transformation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* --- CSS คงเดิมตามที่คุณส่งมา --- */
+        :root { --bg-color: #050505; --primary-green: #00FF88; --dark-green: #005f3b; --text-white: #ffffff; --text-gray: #b0b0b0; --glass-bg: rgba(20, 20, 20, 0.7); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Kanit', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-white); height: 100vh; width: 100vw; overflow: hidden; display: flex; justify-content: center; align-items: center; position: relative; }
+        #canvas-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        .login-card { position: relative; z-index: 10; width: 100%; max-width: 420px; padding: 3rem 2.5rem; background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid rgba(0, 255, 136, 0.3); border-radius: 16px; box-shadow: 0 0 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 255, 136, 0.1); text-align: center; animation: fadeIn 1s ease-out; }
+        .logo { font-size: 3rem; margin-bottom: 10px; color: var(--primary-green); text-shadow: 0 0 10px var(--primary-green); }
+        h2 { font-size: 2rem; font-weight: 600; margin-bottom: 5px; color: var(--text-white); }
+        p.subtitle { color: var(--text-gray); font-size: 0.95rem; margin-bottom: 2.5rem; font-weight: 300; }
+        .input-group { position: relative; margin-bottom: 1.5rem; text-align: left; }
+        .input-group label { display: block; margin-bottom: 8px; font-size: 0.85rem; color: var(--primary-green); letter-spacing: 1px; text-transform: uppercase; }
+        .input-group input { width: 100%; padding: 14px 15px; background: rgba(255, 255, 255, 0.05); border: 1px solid #333; border-radius: 8px; color: white; font-size: 1rem; transition: all 0.3s ease; }
+        .input-group input:focus { outline: none; border-color: var(--primary-green); background: rgba(0, 255, 136, 0.05); box-shadow: 0 0 15px rgba(0, 255, 136, 0.2); }
+        .btn-login { width: 100%; padding: 15px; background: var(--primary-green); color: #000; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; margin-top: 10px; box-shadow: 0 0 15px rgba(0, 255, 136, 0.4); }
+        #message { margin-top: 15px; font-size: 0.9rem; min-height: 20px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    <canvas id="canvas-bg"></canvas>
+    <div class="login-card">
+        <div class="logo">● ■ ▲</div>
+        <h2> AI Transformation</h2>
+        <p class="subtitle"> องค์ประกอบศิลป์ สัมผัสการเรียนรู้</p>
+
+        <form id="loginForm">
+            <div class="input-group">
+                <label>Username / ชื่อผู้ใช้</label>
+                <input type="text" id="username" placeholder="กรอกชื่อผู้ใช้งาน" required>
+            </div>
+            <div class="input-group">
+                <label>Password / รหัสผ่าน</label>
+                <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn-login">เข้าสู่ระบบ</button>
+            
+            <a href="สมัครสมาชิก.html" style="color: #b0b0b0; font-size: 0.85rem; text-decoration: none; margin-top: 20px; display: block; transition: 0.3s;" onmouseover="this.style.color='#00FF88'" onmouseout="this.style.color='#b0b0b0'">
+                ยังไม่มีบัญชี? สมัครสมาชิกที่นี่
+            </a>
+            
+            <div id="message"></div>
+        </form>
+    </div>
+
+    <script>
+        /* --- 1. โค้ด Particle คงเดิม --- */
+        const canvas = document.getElementById('canvas-bg'); const ctx = canvas.getContext('2d'); let particlesArray; canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        class Particle { constructor(x,y,directionX,directionY,size,color){ this.x=x; this.y=y; this.directionX=directionX; this.directionY=directionY; this.size=size; this.color=color; } draw(){ ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2,false); ctx.fillStyle=this.color; ctx.fill(); } update(){ if(this.x>canvas.width||this.x<0)this.directionX=-this.directionX; if(this.y>canvas.height||this.y<0)this.directionY=-this.directionY; this.x+=this.directionX; this.y+=this.directionY; this.draw(); } }
+        function init(){ particlesArray=[]; let num=(canvas.height*canvas.width)/9000; for(let i=0;i<num;i++){ let size=(Math.random()*2)+1; let x=Math.random()*(innerWidth-size*4)+size*2; let y=Math.random()*(innerHeight-size*4)+size*2; particlesArray.push(new Particle(x,y,Math.random()*2-1,Math.random()*2-1,size,'#00FF88')); } }
+        function animate(){ requestAnimationFrame(animate); ctx.clearRect(0,0,innerWidth,innerHeight); for(let i=0;i<particlesArray.length;i++)particlesArray[i].update(); connect(); }
+        function connect(){ for(let a=0;a<particlesArray.length;a++){ for(let b=a;b<particlesArray.length;b++){ let dist=((particlesArray[a].x-particlesArray[b].x)**2)+((particlesArray[a].y-particlesArray[b].y)**2); if(dist<(canvas.width/7)*(canvas.height/7)){ ctx.strokeStyle='rgba(0,255,136,'+(1-(dist/20000))+')'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(particlesArray[a].x,particlesArray[a].y); ctx.lineTo(particlesArray[b].x,particlesArray[b].y); ctx.stroke(); } } } }
+        window.addEventListener('resize',()=>{canvas.width=innerWidth;canvas.height=innerHeight;init();}); init(); animate();
+
+        /* --- 2. ระบบล็อกอิน (ดึงข้อมูลจาก localStorage ที่สมัครจากหน้าอื่น) --- */
+        const form = document.getElementById('loginForm');
+        const messageDiv = document.getElementById('message');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+
+            // ดึงข้อมูลผู้ใช้ทั้งหมดที่เคยสมัครไว้
+            let users = JSON.parse(localStorage.getItem('myUsers')) || [];
+            
+            // เพิ่มรหัส Admin หลัก
+            const admin = {username: "6620110010", password: "30012551"};
+            if(!users.find(x => x.username === admin.username)) users.push(admin);
+
+            const found = users.find(user => user.username === u && user.password === p);
+
+            if (found) {
+                localStorage.setItem('sessionUser', found.username); 
+                messageDiv.style.color = "#00FF88";
+                messageDiv.innerText = `ยินดีต้อนรับคุณ ${found.username}!`;
+                setTimeout(() => { window.location.href = "AI Transformation.html"; }, 1200);
+            } else {
+                messageDiv.style.color = "#ff4444";
+                messageDiv.innerText = "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง!";
+            }
+        });
+    </script>
+</body>
+</html>
