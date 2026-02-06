@@ -1,0 +1,67 @@
+<section id="playground" class="py-24 relative bg-gradient-to-b from-transparent to-black/50">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col lg:flex-row gap-12 items-center">
+
+            <!-- Text -->
+            <div class="lg:w-1/3">
+                <h2 class="text-3xl md:text-5xl font-bold mb-6"><span
+                        class="text-gradient-gold">สัมผัสการเรียนรู้:</span><br>ทฤษฎีสีแบบเชิงโต้ตอบ</h2>
+                <p class="text-gray-300 mb-6 leading-relaxed">
+                    ในระบบการเรียนรู้ของเรา คุณจะไม่ได้เพียงแค่อ่านเท่านั้น แต่คุณจะได้ <strong>ลองผิดลองถูก</strong>
+                    จับคู่สีเอง และเข้าใจหลักการของ "Color Harmony" ได้ทันที
+                </p>
+                <ul class="space-y-3 text-gray-400">
+                    <li class="flex items-center"><i class="fas fa-check-circle text-brand-accent mr-3"></i>
+                        ตรวจสอบส่วนผสมของสีเฉพาะ (RGB/CMYK)</li>
+                    <li class="flex items-center"><i class="fas fa-check-circle text-brand-accent mr-3"></i>
+                        จำลองสีที่อยู่ตรงข้ามกัน (Complementary)</li>
+                    <li class="flex items-center"><i class="fas fa-check-circle text-brand-accent mr-3"></i> สร้าง Mood
+                        Board ให้กับงานศิลปะ</li>
+                </ul>
+            </div>
+
+            <!-- Tool -->
+            <div class="lg:w-2/3 w-full">
+                <div
+                    class="glass-panel p-6 md:p-10 rounded-3xl shadow-2xl border border-white/10 relative overflow-hidden">
+                    <div class="flex justify-between items-center mb-8">
+                        <h3 class="text-xl font-bold flex items-center"><i
+                                class="fas fa-palette mr-2 text-brand-accent"></i> Color Harmony Tool</h3>
+                        <div class="flex gap-2">
+                            <button onclick="setHarmony('analogous')"
+                                class="px-3 py-1 text-xs rounded border border-gray-600 hover:border-brand-accent hover:text-brand-accent transition">Analogous</button>
+                            <button onclick="setHarmony('complementary')"
+                                class="px-3 py-1 text-xs rounded border border-gray-600 hover:border-brand-accent hover:text-brand-accent transition">Complementary</button>
+                        </div>
+                    </div>
+
+                    <div id="color-display"
+                        class="flex h-48 md:h-64 rounded-xl overflow-hidden mb-6 transition-all duration-500 shadow-inner">
+                        <div
+                            class="flex-1 bg-red-500 flex items-center justify-center transition-colors duration-500 color-swatch group relative">
+                            <span
+                                class="text-white/0 group-hover:text-white font-bold text-lg drop-shadow-md transition-all">Primary</span>
+                        </div>
+                        <div
+                            class="flex-1 bg-orange-500 flex items-center justify-center transition-colors duration-500 color-swatch group relative">
+                            <span
+                                class="text-white/0 group-hover:text-white font-bold text-lg drop-shadow-md transition-all">Secondary</span>
+                        </div>
+                        <div
+                            class="flex-1 bg-yellow-500 flex items-center justify-center transition-colors duration-500 color-swatch group relative">
+                            <span
+                                class="text-black/0 group-hover:text-black font-bold text-lg drop-shadow-md transition-all">Tertiary</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-black/40 p-4 rounded-xl">
+                        <label class="text-xs text-gray-400 uppercase tracking-wider mb-2 block">Adjust Hue</label>
+                        <input type="range" min="0" max="360" value="0"
+                            class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-brand-accent"
+                            oninput="updateColors(this.value)">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

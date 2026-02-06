@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>แบบทดสอบ บทที่ 4 | รูปทรงตัน (Form)</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;600;800&family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+    theme: {
+        extend: {
+            fontFamily: { sans: ['Kanit','Poppins','sans-serif'] },
+            colors: { brand:{accent:'#FFAA00'} }
+        }
+    }
+}
+</script>
+
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    background: #000;
+    color: white;
+    font-family: 'Kanit', sans-serif;
+}
+
+/* วิดีโอพื้นหลัง */
+#bgVideo {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: 0.35;
+    z-index: -3;
+}
+
+/* Parallax Layer */
+.parallax-layer {
+    position: fixed;
+    top: 0; left: 0;
+    width: 110%; height: 110%;
+    background-size: cover;
+    background-position: center;
+    z-index: -2;
+    opacity: 0.25;
+    pointer-events: none;
+}
+
+/* Glass Card */
+.glass {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    backdrop-filter: blur(14px);
+    border-radius: 22px;
+}
+
+.correct { background:rgba(255,230,0,0.15); border-color:#ffdd55!important; }
+.wrong   { background:rgba(255,0,0,0.15); border-color:#ff3b3b!important; }
+</style>
+</head>
+
+<body>
+
+<!-- BG Video -->
+<video id="bgVideo" autoplay muted loop>
+    <source src="https://cdn.coverr.co/videos/coverr-dark-waves-5835/1080p.mp4" type="video/mp4">
+</video>
+
+<!-- Parallax BG -->
+<div id="layer4" class="parallax-layer"
+     style="background-image:url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=2400&q=100');">
+</div>
+
+<script>
+document.addEventListener('mousemove', e=>{
+    const x = (e.clientX / window.innerWidth - 0.5) * 20;
+    const y = (e.clientY / window.innerHeight - 0.5) * 20;
+    layer4.style.transform = `translate(${x}px,${y}px)`;
+});
+</script>
+
+<!-- ================== Start Page ================== -->
+<div class="w-full min-h-screen flex justify-center items-center px-4">
+<div id="startPage" class="glass p-10 max-w-2xl w-full text-center">
+
+    <h1 class="text-5xl font-bold mb-6 text-brand-accent">
+        แบบทดสอบ บทที่ 4<br>"รูปทรงตัน (Form)"
+    </h1>
+
+    <p class="text-gray-300 mb-8 text-lg">
+        ทดสอบความเข้าใจเรื่องรูปทรงตันทั้งหมด 15 ข้อ พร้อมระบบตรวจคะแนนอัตโนมัติ
+    </p>
+
+    <button onclick="startQuiz()"
+        class="w-full py-4 bg-brand-accent text-black font-bold rounded-xl text-xl hover:scale-105 transition">เริ่มทำแบบทดสอบ</button>
+
+</div>
+</div>
+
+
+<!-- ================== Quiz Page ================== -->
+<div id="quizPage" class="hidden max-w-4xl mx-auto glass p-10 mt-10">
+    <h1 class="text-4xl font-bold text-center mb-6 text-brand-accent">แบบทดสอบเรื่อง “รูปทรงตัน (Form)”</h1>
+    <form id="quiz" class="space-y-8"></form>
+
+    <button onclick="checkScore()" class="mt-10 w-full py-4 bg-brand-accent text-black font-bold rounded-xl text-lg hover:scale-105 transition">
+        ตรวจคะแนน
+    </button>
+
+    <div id="warn" class="text-red-400 text-center mt-3"></div>
+</div>
+
+
+<!-- ================== Result Page ================== -->
+<div id="resultPage" class="hidden glass p-10 max-w-3xl mx-auto text-center mt-10">
+    <div id="answerReview" class="mt-10 space-y-4 text-left"></div>
+    <h1 class="text-4xl font-bold mb-6 text-brand-accent">ผลคะแนน</h1>
+
+    <canvas id="scoreGraph" width="380" height="250" class="mx-auto"></canvas>
+
+    <p id="scoreText" class="text-3xl font-bold mt-6"></p>
+
+    <button onclick="location.reload()" class="mt-10 w-full py-4 bg-brand-accent text-black font-bold rounded-xl text-lg hover:scale-105 transition">
+        ทำใหม่อีกครั้ง
+    </button>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+/* ================== คำถามบทที่ 4 ================== */
+const questions = [
+    {q:"รูปทรงตัน (Form) คืออะไร?",a:["รูปแบบสองมิติ","รูปร่างที่มีความลึกและปริมาตร","สีของวัตถุ","โครงสร้างพื้นผิว"],c:1},
+    {q:"รูปทรงใดเป็นรูปทรงตัน?",a:["สี่เหลี่ยม","วงกลม","ลูกบาศก์","สามเหลี่ยม"],c:2},
+    {q:"งานศิลปะที่ให้ความรู้สึกมีน้ำหนักและปริมาตรเป็นลักษณะของ?",a:["Texture","Shape","Form","Color"],c:2},
+    {q:"ทรงกระบอกเป็นรูปทรงแบบใด?",a:["แบน","ตัน","เรขาคณิตแบน","พื้นผิว"],c:1},
+    {q:"ข้อใดคือรูปทรงอินทรีย์ (Organic Form)?",a:["ลูกบาศก์","ปิรามิด","ก้อนหิน","ทรงกลม"],c:2},
+    {q:"รูปทรงตันแตกต่างจากรูปร่าง (Shape) อย่างไร?",a:["มีสีต่างกัน","เป็นสามมิติ","เป็นเส้นตรงเท่านั้น","ไม่มีความลึก"],c:1},
+    {q:"ปิรามิดจัดเป็นรูปทรงแบบใด?",a:["ตันเรขาคณิต","อินทรีย์","พื้นผิว","รูปทรงแบน"],c:0},
+    {q:"การลงเงาในภาพวาดช่วยให้เกิดอะไร?",a:["ความสว่าง","ความลึกและปริมาตร","ความแบน","ความคมชัดของสี"],c:1},
+    {q:"ทรงกลมมีจุดเด่นด้านใด?",a:["มีมุมมาก","ไม่มีมุมและมีปริมาตร","เป็นพื้นผิวหยาบ","เป็นรูปแบน"],c:1},
+    {q:"ข้อใดเป็นตัวอย่างของรูปทรงตันในชีวิตจริง?",a:["เงาของวัตถุ","ภาพเขียนวงกลม","ขวดน้ำ","สัญลักษณ์บนป้าย"],c:2},
+    {q:"รูปทรงใดให้ความรู้สึกมั่นคงที่สุด?",a:["ทรงกลม","ทรงกระบอก","ลูกบาศก์","ทรงรี"],c:2},
+    {q:"รูปทรงอินทรีย์มีลักษณะเด่นอย่างไร?",a:["เป็นเหลี่ยมๆ","เกิดจากธรรมชาติ","ถูกสร้างด้วยคอมพิวเตอร์","ไม่มีความลึก"],c:1},
+    {q:"การวาดแสง-เงาช่วยให้วัตถุดูอย่างไร?",a:["แบน","เบลอ","เป็นสามมิติ","ใหญ่ขึ้น"],c:2},
+    {q:"วัตถุใดจัดเป็นรูปทรงตันเรขาคณิต?",a:["ก้อนเมฆ","โต๊ะ","ก้อนดิน","เถาวัลย์"],c:1},
+    {q:"การใช้ Perspective มีผลต่ออะไรในรูปทรง?",a:["ความมืด","ความลึกในพื้นที่","ความหยาบ","สี"],c:1}
+];
+
+/* สร้างคำถาม */
+const quizForm = document.getElementById("quiz");
+questions.forEach((item,index)=>{
+    let box = document.createElement("div");
+    box.className = "glass p-6";
+    let ansHTML = "";
+    item.a.forEach((ch,i)=>{
+        ansHTML += `
+        <label class='flex items-center gap-3 py-1 cursor-pointer'>
+            <input type="radio" name="q${index}" value="${i}" class="accent-brand-accent">
+            <span>${ch}</span>
+        </label>`;
+    });
+    box.innerHTML = `<h3 class='font-bold text-lg mb-3'>${index+1}. ${item.q}</h3>${ansHTML}`;
+    quizForm.appendChild(box);
+});
+
+/* เริ่มทำแบบทดสอบ */
+function startQuiz(){
+    startPage.classList.add("hidden");
+    quizPage.classList.remove("hidden");
+}
+
+/* ตรวจคะแนน */
+function checkScore(){
+    for(let i=0;i<questions.length;i++){
+        if(!document.querySelector(`input[name='q${i}']:checked`)){
+            warn.innerHTML = `กรุณาตอบข้อที่ <span class='text-brand-accent'>${i+1}</span>`;
+            return;
+        }
+    }
+
+    let score = 0;
+    document.querySelectorAll('#quiz > div').forEach((box,i)=>{
+        const selected = document.querySelector(`input[name='q${i}']:checked`);
+        if(parseInt(selected.value) === questions[i].c){
+            box.classList.add("correct");
+            score++;
+        } else {
+            box.classList.add("wrong");
+        }
+    });
+
+    quizPage.classList.add("hidden");
+    resultPage.classList.remove("hidden");
+
+    scoreText.innerHTML = `คุณได้คะแนน <span class='text-brand-accent text-4xl'>${score}</span> / 15`;
+
+    new Chart(scoreGraph,{
+        type:'doughnut',
+        data:{
+            labels:['ถูก','ผิด'],
+            datasets:[{
+                data:[score,15-score],
+                backgroundColor:['#ffdd55','#ff4545'],
+            }]
+        }
+    });
+}
+function checkScore() {
+
+    // ตรวจว่าตอบครบไหม
+    for(let i=0;i<questions.length;i++){
+        if(!document.querySelector(`input[name='q${i}']:checked`)){
+            warn.innerHTML = `กรุณาตอบข้อที่ <span class='text-brand-accent'>${i+1}</span>`;
+            return;
+        }
+    }
+
+    let score = 0;
+    let reviewHTML = "";
+
+    document.querySelectorAll('#quiz > div').forEach((box,i)=>{
+
+        const selected = document.querySelector(`input[name='q${i}']:checked`);
+        const userAns = parseInt(selected.value);
+        const correctAns = questions[i].c;
+
+        if(userAns === correctAns){
+            box.classList.add("correct");
+            score++;
+        } else {
+            box.classList.add("wrong");
+        }
+
+        // สร้างเฉลย
+        reviewHTML += `
+            <div class="p-4 rounded-xl border ${
+                userAns === correctAns ? "border-green-400 bg-green-800/20" : "border-red-400 bg-red-800/20"
+            }">
+                <p class="font-bold text-lg">ข้อ ${i+1}. ${questions[i].q}</p>
+                <p class="mt-1">คุณตอบ: 
+                    <span class="${userAns === correctAns ? 'text-green-300' : 'text-red-300'}">
+                        ${questions[i].a[userAns]}
+                    </span>
+                </p>
+                <p>คำตอบที่ถูกต้องคือ: 
+                    <span class="text-brand-accent font-bold">
+                        ${questions[i].a[correctAns]}
+                    </span>
+                </p>
+            </div>
+        `;
+    });
+
+    // ซ่อนหน้า quiz ไปหน้า result
+    quizPage.classList.add("hidden");
+    resultPage.classList.remove("hidden");
+
+    // แสดงคะแนนรวม
+    scoreText.innerHTML = `คุณได้คะแนน <span class='text-brand-accent text-4xl'>${score}</span> / 15`;
+
+    // ใส่เฉลยลงหน้าใหม่
+    document.getElementById("answerReview").innerHTML = reviewHTML;
+
+    // วงกลมคะแนน
+    new Chart(scoreGraph,{
+        type:'doughnut',
+        data:{
+            labels:['ถูก','ผิด'],
+            datasets:[{
+                data:[score,15-score],
+                backgroundColor:['#00f260','#ff4545'],
+            }]
+        }
+    });
+}
+
+</script>
+
+</body>
+</html>

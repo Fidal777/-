@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>แบบทดสอบบทที่ 3 | องค์ประกอบศิลป์</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;600;800&family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+    theme: {
+        extend: {
+            fontFamily: { sans: ['Kanit','Poppins','sans-serif'] },
+            colors: { brand:{accent:'#32CD32'} } /* สีทอง */
+        }
+    }
+}
+</script>
+
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    background: #000;
+    font-family: 'Kanit', sans-serif;
+    color: white;
+}
+
+/* พื้นหลังวิดีโอ */
+#bgVideo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.35;
+    z-index: -3;
+}
+
+/* Parallax */
+.parallax-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 110%;
+    height: 110%;
+    background-size: cover;
+    background-position: center;
+    z-index: -2;
+    opacity: 0.25;
+    pointer-events: none;
+}
+
+/* กล่องแก้ว */
+.glass {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.15);
+    backdrop-filter: blur(14px);
+    border-radius: 20px;
+}
+
+.correct { background:rgba(0,255,0,0.15); border-color:#00f260!important; }
+.wrong   { background:rgba(255,0,0,0.15); border-color:#ff3b3b!important; }
+</style>
+</head>
+
+<body>
+<!-- Parallax -->
+<div id="layer1" class="parallax-layer"
+     style="background-image:url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=2400&q=100');">
+</div>
+
+<script>
+document.addEventListener('mousemove', e => {
+    const x = (e.clientX / window.innerWidth - 0.5) * 20;
+    const y = (e.clientY / window.innerHeight - 0.5) * 20;
+    layer1.style.transform = `translate(${x}px, ${y}px)`; 
+});
+</script>
+
+
+<!-- ================== หน้าเริ่มสอบ ================== -->
+<div class="w-full min-h-screen flex justify-center items-center px-4">
+
+<div id="startPage"
+     class="glass p-10 max-w-2xl w-full text-center animate-fadeIn">
+
+    <h1 class="text-5xl font-bold mb-6 text-brand-accent">
+        แบบทดสอบ บทที่ 3<br>"สี (Color)"
+    </h1>
+
+    <p class="text-gray-300 mb-8 text-lg">
+        ทดสอบความเข้าใจเรื่อง “สี” ทั้งหมด 15 ข้อ พร้อมระบบตรวจคะแนนอัตโนมัติ
+    </p>
+
+    <button onclick="startQuiz()"
+        class="w-full py-4 bg-brand-accent text-black font-bold rounded-xl text-xl hover:scale-105 transition">
+        เริ่มทำแบบทดสอบ
+    </button>
+</div>
+
+</div>
+
+
+<!-- ================== หน้าแบบทดสอบ ================== -->
+<div id="quizPage" class="hidden max-w-4xl mx-auto glass p-10 animate-fadeIn mt-10">
+    <h1 class="text-4xl font-bold text-center mb-6 text-brand-accent">แบบทดสอบเรื่อง “สี”</h1>
+    <form id="quiz" class="space-y-8"></form>
+
+    <button onclick="checkScore()"
+            class="mt-10 w-full py-4 bg-brand-accent text-black font-bold rounded-xl text-lg hover:scale-105 transition">
+        ตรวจคะแนน
+    </button>
+    <div id="warn" class="text-red-400 text-center mt-3"></div>
+</div>
+
+
+
+<!-- ================== หน้าแสดงคะแนน ================== -->
+<div id="resultPage" class="hidden glass p-10 max-w-3xl mx-auto text-center animate-fadeIn mt-10">
+    <div id="answerReview" class="mt-10 space-y-4 text-left"></div>
+    <h1 class="text-4xl font-bold mb-6 text-brand-accent">ผลคะแนน</h1>
+    <canvas id="scoreGraph" width="400" height="260" class="mx-auto"></canvas>
+    <p id="scoreText" class="text-3xl font-bold mt-6"></p>
+
+    <button onclick="location.reload()"
+            class="mt-10 w-full py-4 bg-brand-accent text-black font-bold rounded-xl text-lg hover:scale-105 transition">
+        ทำใหม่อีกครั้ง
+    </button>
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+/* ===================== คำถามบทที่ 3 – สี ===================== */
+const questions = [
+    {q:"สีปฐมภูมิ (Primary Colors) ได้แก่ข้อใด?",a:["แดง เหลือง น้ำเงิน","เขียว ม่วง ส้ม","ดำ ขาว เทา","แดง เขียว น้ำเงิน"],c:0},
+    {q:"สีที่เกิดจากการผสมสีปฐมภูมิสองสี เรียกว่าอะไร?",a:["สีคู่ตรงข้าม","สีทุติยภูมิ","สีไล่โทน","สีคอมพลีเมนต์"],c:1},
+    {q:"สีใดต่อไปนี้เป็นสีทุติยภูมิ (Secondary Color)?",a:["แดง","ส้ม","น้ำเงิน","เหลือง"],c:1},
+    {q:"สีคู่ตรงข้าม (Complementary Colors) มีผลอย่างไร?",a:["ทำให้รู้สึกอบอุ่น","ตัดกันเด่นชัด","ทำให้ดูอ่อนหวาน","ทำให้กลมกลืน"],c:1},
+    {q:"สีโทนอุ่นได้แก่ข้อใด?",a:["เขียว น้ำเงิน ม่วง","แดง ส้ม เหลือง","เทา ดำ ขาว","น้ำเงิน ม่วง"],c:1},
+    {q:"สีโทนเย็นให้ความรู้สึกอย่างไร?",a:["อบอุ่น","สดใส","สงบ เยือกเย็น","ตื่นเต้น"],c:2},
+    {q:"สีใดเป็นสีที่ให้ความรู้สึกมีพลังและเร้าอารมณ์?",a:["ฟ้าอ่อน","ชมพู","แดง","เทา"],c:2},
+    {q:"การไล่เฉดสี (Gradient) คืออะไร?",a:["การเพิ่มแสงเงา","การผสมสีให้เป็นจุด","การเปลี่ยนสีอย่างต่อเนื่อง","การวาดเส้นรอบรูป"],c:2},
+    {q:"สีเอกรงค์ (Monochrome) คืออะไร?",a:["ใช้สีตัดกันมาก","ใช้สีเดียวแต่หลายเฉด","ใช้สีร้อนเท่านั้น","ใช้สีสามสี"],c:1},
+    {q:"สีใดที่มักสื่อถึงความน่าเชื่อถือ?",a:["แดง","ส้ม","น้ำเงิน","ชมพู"],c:2},
+    {q:"สีดำในงานออกแบบมักใช้เพื่อสื่ออะไร?",a:["อ่อนหวาน","สุภาพ เรียบหรู","อันตราย","สดใส"],c:1},
+    {q:"สีใดเป็นสัญลักษณ์ของความเป็นมิตรและสดชื่น?",a:["ฟ้า","ส้ม","เขียว","ม่วง"],c:2},
+    {q:"สีพาสเทลมักให้ความรู้สึกแบบใด?",a:["นุ่มนวล อ่อนโยน","ก้าวร้าว","จริงจัง","หรูหรา"],c:0},
+    {q:"สีที่มีความอิ่มตัวสูง (Saturation สูง) ให้ผลอย่างไร?",a:["หม่น เศร้า","สด ชัดเจน","จืดจาง","ดูโบราณ"],c:1},
+    {q:"สีที่ใช้ในแบรนด์หรูหรามักนิยมสีใด?",a:["แดงสด","ฟ้าอ่อน","ทอง ดำ","เหลืองสด"],c:2},
+];
+
+/* ====== generate UI ====== */
+const quizForm = document.getElementById("quiz");
+
+questions.forEach((item,index)=>{
+    let box = document.createElement("div");
+    box.className = "glass p-6";
+
+    let ansHTML = "";
+    item.a.forEach((ch,i)=>{
+        ansHTML += `
+        <label class='flex items-center gap-3 py-1 cursor-pointer'>
+            <input type="radio" name="q${index}" value="${i}" class="accent-brand-accent">
+            <span>${ch}</span>
+        </label>`;
+    });
+
+    box.innerHTML = `<h3 class='font-bold text-lg mb-3'>${index+1}. ${item.q}</h3>${ansHTML}`;
+    quizForm.appendChild(box);
+});
+
+
+function startQuiz(){
+    startPage.classList.add("hidden");
+    quizPage.classList.remove("hidden");
+}
+
+function checkScore(){
+
+    for(let i=0;i<questions.length;i++){
+        if(!document.querySelector(`input[name='q${i}']:checked`)){
+            warn.innerHTML = `กรุณาตอบข้อที่ <span class='text-brand-accent'>${i+1}</span>`;
+            return;
+        }
+    }
+
+    let score = 0;
+    document.querySelectorAll('#quiz > div').forEach((box,i)=>{
+        const selected = document.querySelector(`input[name='q${i}']:checked`);
+        if(parseInt(selected.value) === questions[i].c){
+            box.classList.add("correct");
+            score++;
+        } else {
+            box.classList.add("wrong");
+        }
+    });
+
+    quizPage.classList.add("hidden");
+    resultPage.classList.remove("hidden");
+
+    scoreText.innerHTML = `คุณได้คะแนน <span class='text-brand-accent text-4xl'>${score}</span> / 15`;
+
+    new Chart(scoreGraph,{
+        type:'doughnut',
+        data:{
+            labels:['ถูก','ผิด'],
+            datasets:[{
+                data:[score,15-score],
+                backgroundColor:['#00f260','#ff4545'],
+            }]
+        }
+    });
+}
+function checkScore() {
+
+    // ตรวจว่าตอบครบไหม
+    for(let i=0;i<questions.length;i++){
+        if(!document.querySelector(`input[name='q${i}']:checked`)){
+            warn.innerHTML = `กรุณาตอบข้อที่ <span class='text-brand-accent'>${i+1}</span>`;
+            return;
+        }
+    }
+
+    let score = 0;
+    let reviewHTML = "";
+
+    document.querySelectorAll('#quiz > div').forEach((box,i)=>{
+
+        const selected = document.querySelector(`input[name='q${i}']:checked`);
+        const userAns = parseInt(selected.value);
+        const correctAns = questions[i].c;
+
+        if(userAns === correctAns){
+            box.classList.add("correct");
+            score++;
+        } else {
+            box.classList.add("wrong");
+        }
+
+        // สร้างเฉลย
+        reviewHTML += `
+            <div class="p-4 rounded-xl border ${
+                userAns === correctAns ? "border-green-400 bg-green-800/20" : "border-red-400 bg-red-800/20"
+            }">
+                <p class="font-bold text-lg">ข้อ ${i+1}. ${questions[i].q}</p>
+                <p class="mt-1">คุณตอบ: 
+                    <span class="${userAns === correctAns ? 'text-green-300' : 'text-red-300'}">
+                        ${questions[i].a[userAns]}
+                    </span>
+                </p>
+                <p>คำตอบที่ถูกต้องคือ: 
+                    <span class="text-brand-accent font-bold">
+                        ${questions[i].a[correctAns]}
+                    </span>
+                </p>
+            </div>
+        `;
+    });
+
+    // ซ่อนหน้า quiz ไปหน้า result
+    quizPage.classList.add("hidden");
+    resultPage.classList.remove("hidden");
+
+    // แสดงคะแนนรวม
+    scoreText.innerHTML = `คุณได้คะแนน <span class='text-brand-accent text-4xl'>${score}</span> / 15`;
+
+    // ใส่เฉลยลงหน้าใหม่
+    document.getElementById("answerReview").innerHTML = reviewHTML;
+
+    // วงกลมคะแนน
+    new Chart(scoreGraph,{
+        type:'doughnut',
+        data:{
+            labels:['ถูก','ผิด'],
+            datasets:[{
+                data:[score,15-score],
+                backgroundColor:['#00f260','#ff4545'],
+            }]
+        }
+    });
+}
+</script>
+
+</body>
+</html>

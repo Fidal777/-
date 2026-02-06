@@ -1,0 +1,79 @@
+<nav class="fixed w-full z-50 transition-all duration-300 p-4 top-0" id="navbar">
+    <div class="max-w-7xl mx-auto glass-panel rounded-full px-6 py-3 flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+            <div
+                class="w-8 h-8 rounded-full bg-gradient-to-tr from-brand-accent to-brand-accent2 flex items-center justify-center text-black font-bold">
+                AI</div>
+            <span class="text-xl font-bold tracking-wider">TRANS<span class="text-brand-accent">FORMATION</span></span>
+        </div>
+        <div class="hidden md:flex space-x-8 text-sm font-light tracking-widest">
+            <a href="#hero" class="hover:text-brand-accent transition-colors">หน้าแรก</a>
+            <a href="#elements" class="hover:text-brand-accent transition-colors">องค์ประกอบ</a>
+            <a href="#playground" class="hover:text-brand-accent transition-colors">โจทย์ปฏิบัติ</a>
+            <a href="#gallery" class="hover:text-brand-accent transition-colors">แบบฝึกหัด</a>
+            <a href="#curriculum" class="hover:text-brand-accent transition-colors">หลักสูตร</a>
+        </div>
+        <a href="ล็อกอิน.html">
+            <div class="flex items-center">
+                <a href="ล็อกอิน.html" id="login-nav-btn">
+                    <button
+                        class="bg-white text-black px-6 py-2 rounded-full font-bold text-sm hover:bg-brand-accent transition-all duration-300 transform hover:scale-105 shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+                        เข้าสู่ระบบ
+                    </button>
+                </a>
+
+                <div id="user-profile-nav" class="hidden flex items-center space-x-3 cursor-pointer group relative">
+                    <div class="text-right hidden sm:block">
+                        <p id="user-display-name" class="text-xs font-light text-gray-400">ยินดีต้อนรับ</p>
+                        <p id="user-actual-name"
+                            class="text-sm font-bold text-white group-hover:text-brand-accent transition-colors">User
+                            Name</p>
+                    </div>
+
+                    <div class="relative" onclick="document.getElementById('file-input').click()">
+                        <div
+                            class="w-10 h-10 rounded-full border-2 border-brand-accent overflow-hidden shadow-[0_0_10px_rgba(0,242,96,0.3)]">
+                            <img id="user-avatar-img" src="" alt="Profile" class="w-full h-full object-cover">
+                        </div>
+                        <div
+                            class="absolute -bottom-1 -right-1 bg-brand-accent text-black text-[10px] w-4 h-4 rounded-full flex items-center justify-center border border-black">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <input type="file" id="file-input" class="hidden" accept="image/*">
+                    </div>
+
+                    <div
+                        class="absolute right-0 top-full mt-2 w-48 glass-panel rounded-xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                        <button onclick="changeProfileName()"
+                            class="w-full text-left px-4 py-2 text-sm hover:bg-brand-accent/20 transition-colors">
+                            <i class="fas fa-user-edit mr-2 text-brand-accent"></i> เปลี่ยนชื่อ
+                        </button>
+                        <button onclick="document.getElementById('file-input').click()"
+                            class="w-full text-left px-4 py-2 text-sm hover:bg-brand-accent/20 transition-colors">
+                            <i class="fas fa-image mr-2 text-brand-accent"></i> เปลี่ยนรูปภาพ
+                        </button>
+                        <div class="border-t border-white/10 my-1"></div>
+                        <button onclick="logout()"
+                            class="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-red-500/20 transition-colors">
+                            <i class="fas fa-sign-out-alt mr-2"></i> ออกจากระบบ
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+</nav>
+<div class="center-search-area">
+    <div class="center-search-box">
+        <input id="searchInput" type="text" placeholder="ค้นหาเนื้อหา เช่น เส้น สี รูปทรง องค์ประกอบ..." />
+        <button onclick="goSearch()" style="
+        padding: 10px 22px;
+        border-radius: 50px;
+        background: #111;
+        color: white;
+        border: 2px solid #fff;
+        font-size: 15px;
+        cursor: pointer;
+        ">ค้นหา</button>
+    </div>
+</div>
